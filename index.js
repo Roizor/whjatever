@@ -26,6 +26,10 @@ async function runSample(message, args) {
     part: 'id,snippet',
     q: args,
   });
+  if (client.isinVC) {
+    message.channel.send(embedGen('Error', 'I\'m already playing something!'))
+    return
+  }
   message.channel.send('Searching..')
   const element = res.data.items[0];
   message.channel.send(embedGen('Music: Download', `Starting download on \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\``))
@@ -35,12 +39,14 @@ async function runSample(message, args) {
     setInterval(() => {
       fs.readFileSync('stdout.txt').toString().split('\n').forEach((g) => {
         if(done) return
+        if(fs.existsSync('whjatever.webm')) return
         if(g.includes('[download] 100% of')) {
           setTimeout(async () => {
             if(done) return
             fs.renameSync(`${element.snippet.title} [${element.id.videoId}].webm`, 'whjatever.webm')
             message.channel.send(embedGen('Music: Download', 'Download of `' + element.snippet.title + '` finished.'));
             if (message.member.voice.channel) {
+             
               connection = await message.member.voice.channel.join();
               if(fs.existsSync('whjatever.webm')) {
                 dispatcher = connection.play('whjatever.webm', { volume: volume })
@@ -48,6 +54,7 @@ async function runSample(message, args) {
               message.channel.send(embedGen('Music', 'I have joined the VC.'));
               dispatcher.on('finish', () => {
                 message.channel.send(embedGen('Music', 'The song has finished.'));
+                
               })
             } else {
               message.channel.send(embedGen('Music', 'You are not in a VC or I cannot see you - I cannot join without you typing `-join`'));
@@ -62,6 +69,8 @@ async function runSample(message, args) {
 init()
 
 const client = new Discord.Client();
+client.version = '0.2'
+client.isinVC = false
 let connection;
 let dispatcher;
 let volume = 0.5;
@@ -75,6 +84,7 @@ client.on('ready', () => {
     client.user.setActivity({type:'PLAYING', name: `Hello! This bot does not fully work yet. Check back soon.`})
   },6000 * 2)
   console.log('I am ready!');
+  message.channel.send(embedGen('Ready', 'The bot is ready to recieve commands.\n Amongle Music Bot v'+client.version))
 });
 
 client.on('message', async message => {
@@ -97,9 +107,12 @@ client.on('message', async message => {
         } else {
           message.channel.send(embedGen('Error', 'No music has been downloaded yet!'))
         }
+        client.isinVC = true
         message.channel.send(embedGen('Music', 'I have joined the VC.'));
         dispatcher.on('finish', () => {
           message.channel.send(embedGen('Music', 'The song has finished.'));
+          dispatcher.destroy()
+          connection.disconnect()
         })
       } else {
         message.channel.send(embedGen('Error', 'You are not in a VC!'));
@@ -112,7 +125,7 @@ client.on('message', async message => {
       if (message.member.voice.channel) {
         dispatcher.destroy();
         connection.disconnect()
-  
+        client.isinVC = false
         message.channel.send(embedGen('Music', 'I have left the VC.'));
       } else {
         message.channel.send(embedGen('Error', 'You are not in a VC!'));
