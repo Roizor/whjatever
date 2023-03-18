@@ -89,14 +89,20 @@ client.on('message', async message => {
       if (message.member.voice.channel) {
         connection = await message.member.voice.channel.join();
         if(fs.existsSync('whjatever.webm')) {
-          dispatcher = connection.play('whjatever.webm', { volume: volume })
+          try { 
+            dispatcher = connection.play('whjatever.webm', { volume: volume })
+          } catch(e) {
+            message.channel.send(embedGen('Error', e))
+          }
+        } else {
+          message.channel.send(embedGen('Error', 'No music has been downloaded yet!'))
         }
         message.channel.send(embedGen('Music', 'I have joined the VC.'));
         dispatcher.on('finish', () => {
           message.channel.send(embedGen('Music', 'The song has finished.'));
         })
       } else {
-        message.channel.send(embedGen('Music', 'You are not in a VC!'));
+        message.channel.send(embedGen('Error', 'You are not in a VC!'));
       }
     }
     else if (command == 'test') {
@@ -109,7 +115,7 @@ client.on('message', async message => {
   
         message.channel.send(embedGen('Music', 'I have left the VC.'));
       } else {
-        message.channel.send(embedGen('Music', 'You are not in a VC!'));
+        message.channel.send(embedGen('Error', 'You are not in a VC!'));
       }
     }
     else if(command == 'volume') {
@@ -118,10 +124,10 @@ client.on('message', async message => {
       volume = newVol;
     }
     else {
-
+      message.channel.send(embedGen('Error', 'That command does not exist!'))
     }
   } catch(er) {
-    message.author.send('Failed with error ('+er+') Please report this to @Roi#9999')
+    message.channel.send(embedGen('Error', 'Failed with error ('+er+') Please report this to @Roi#9999'))
   }
 });
 
