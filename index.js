@@ -1,24 +1,4 @@
-
-// const { clientId, guildId, token, publicKey } = require('./config.json');
-require('dotenv').config()
-const APPLICATION_ID = process.env.APPLICATION_ID 
-const TOKEN = process.env.TOKEN 
-const PUBLIC_KEY = process.env.PUBLIC_KEY || 'not set'
-const GUILD_ID = process.env.GUILD_ID 
-const { joinVoiceChannel } = require('@discordjs/voice');
-
-const axios = require('axios')
-const express = require('express');
-
-
-const app = express();
-// app.use(bodyParser.json());
-
-/**
- * A ping pong bot, whenever you send "ping", it replies "pong".
- */
-
-// Import the discord.js module
+const config = require('./config.json')
 const Discord = require('discord.js');
 
 // Create an instance of a Discord client
@@ -42,14 +22,5 @@ client.on('message', message => {
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login(TOKEN);
-
-app.get('/', async (req,res) =>{
-  return res.send('Follow documentation ')
-})
-
-
-app.listen(8999, () => {
-
-})
+client.login(config.token);
 
