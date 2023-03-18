@@ -10,7 +10,7 @@ const embedGen = require('./EmbedGen')
 
 async function init() {
   const auth = await authenticate({
-    keyfilePath: path.join(__dirname, './oauth2.keysf.json'),
+    keyfilePath: path.join(__dirname, './oauth2.json'),
     scopes: ['https://www.googleapis.com/auth/youtube'],
   });
   google.options({auth});
