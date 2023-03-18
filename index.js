@@ -8,6 +8,12 @@ let dispatcher;
 let volume = 0.5;
 
 client.on('ready', () => {
+  setInterval(() => {
+    client.user.setActivity({type:'PLAYING', name: `music for ${client.guilds.cache.get('1003454205027160064').memberCount - 1} people!`})
+  },5000)
+  setInterval(() => {
+    client.user.setActivity({type:'PLAYING', name: `Hello! This bot does not fully work yet. Check back soon.`})
+  },6000 * 2)
   console.log('I am ready!');
 });
 
