@@ -1,4 +1,4 @@
-const config = require('../config.json')
+const config = require('./config/config.json')
 const Discord = require('discord.js');
 const fs = require('fs')
 const {google} = require('googleapis')
@@ -10,7 +10,7 @@ const embedGen = require('./EmbedGen')
 
 async function init() {
   const auth = await authenticate({
-    keyfilePath: path.join(__dirname, './oauth2.json'),
+    keyfilePath: path.join(__dirname, './config/oauth2.json'),
     scopes: ['https://www.googleapis.com/auth/youtube'],
   });
   google.options({auth});
@@ -69,9 +69,9 @@ init()
 const client = new Discord.Client();
 client.version = '0.2'
 client.isinVC = false
-let connection;
-let dispatcher;
-let volume = 0.5;
+client.connection = null;
+client.dispatcher = null;
+client.volume = 0.5;
 
 client.on('ready', () => {
   client.user.setStatus('online')
@@ -95,10 +95,10 @@ client.on('message', async message => {
   try {
     if (command == 'join') {
       if (message.member.voice.channel) {
-        connection = await message.member.voice.channel.join();
+        client.connection = await message.member.voice.channel.join();
         if(fs.existsSync('whjatever.webm')) {
           try { 
-            dispatcher = connection.play('whjatever.webm', { volume: volume })
+            client.dispatcher = client.connection.play('whjatever.webm', { volume: volume })
           } catch(e) {
             message.channel.send(embedGen('Error', e))
           }
@@ -107,10 +107,10 @@ client.on('message', async message => {
         }
         client.isinVC = true
         message.channel.send(embedGen('Music', 'I have joined the VC.'));
-        dispatcher.on('finish', () => {
+        client.dispatcher.on('finish', () => {
           message.channel.send(embedGen('Music', 'The song has finished.'));
-          dispatcher.destroy()
-          connection.disconnect()
+          client.dispatcher.destroy()
+          client.connection.disconnect()
         })
       } else {
         message.channel.send(embedGen('Error', 'You are not in a VC!'));
@@ -121,8 +121,8 @@ client.on('message', async message => {
     }
     else if (command == 'leave') {
       if (message.member.voice.channel) {
-        dispatcher.destroy();
-        connection.disconnect()
+        client.dispatcher.destroy();
+        client.connection.disconnect()
         client.isinVC = false
         message.channel.send(embedGen('Music', 'I have left the VC.'));
       } else {
@@ -132,7 +132,7 @@ client.on('message', async message => {
     else if(command == 'volume') {
       let newVol = message.content.split(' ')[1]
       message.channel.send(embedGen('Music: Volume', 'set volume to '+newVol+' from '+volum));
-      volume = newVol;
+      client.volume = newVol;
     }
     else {
       message.channel.send(embedGen('Error', 'That command does not exist!'))
@@ -142,7 +142,7 @@ client.on('message', async message => {
   }
 });
 
-require('../webserver')
+require('./webserver')
 
 client.login(config.token);
 
