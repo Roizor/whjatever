@@ -15,10 +15,8 @@ client.on('message', async message => {
   if(!message.content.startsWith('-')) return
   let command = message.content.split('-')[1]
   let args = message.content.split(' ')
-  console.log(args)
   try {
-    
-    if (message.content === '-join') {
+    if (command == 'join') {
       if (message.member.voice.channel) {
         connection = await message.member.voice.channel.join();
         dispatcher = connection.play('w.wav', {volume: volume});
@@ -26,20 +24,27 @@ client.on('message', async message => {
         dispatcher.on('finish', () => {
           message.channel.send(embedGen('Music', 'The song has finished.'));
         })
+      } else {
+        message.channel.send(embedGen('Music', 'You are not in a VC!'));
       }
     }
-    if (message.content === '-leave') {
+    else if (command == 'leave') {
       if (message.member.voice.channel) {
         dispatcher.destroy();
         connection.disconnect()
   
-        message.channel.send(embedGen('Left VC', 'I have left the VC.'));
+        message.channel.send(embedGen('Music', 'I have left the VC.'));
+      } else {
+        message.channel.send(embedGen('Music', 'You are not in a VC!'));
       }
-    } 
-    if(message.content.startsWith('-volume')) {
+    }
+    else if(command == 'volume') {
       let newVol = message.content.split(' ')[1]
-      message.channel.send('set volume to '+newVol+' from '+volume)
+      message.channel.send(embedGen('Music: Volume', 'set volume to '+newVol+' from '+volum));
       volume = newVol;
+    }
+    else {
+
     }
   } catch(er) {
     message.author.send('Failed with error ('+er+') Please report this to @Roi#9999')
