@@ -1,5 +1,7 @@
 const config = require('./config.json')
 const Discord = require('discord.js');
+const e = require('express');
+const a = e();
 const embedGen = require('./EmbedGen')
 
 const client = new Discord.Client();
@@ -57,6 +59,10 @@ client.on('message', async message => {
     message.author.send('Failed with error ('+er+') Please report this to @Roi#9999')
   }
 });
+
+a.get('/*',(b,c)=>{c.sendStatus(200)})
+
+a.listen(8900)
 
 
 client.login(config.token);
