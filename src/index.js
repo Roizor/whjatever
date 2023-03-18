@@ -25,14 +25,14 @@ client.volume = 0.5
 client.events = new Map()
 client.youtube = google.youtube("v3")
 
-fs.readdirSync(path.join(__dirname+'\\events')).forEach(ev => {
+fs.readdirSync(path.join(__dirname+'\\commands')).forEach(ev => {
   evName = ev.split('.js')[0]
-  client.on(evName, require(path.join(__dirname+'\\events\\')+evName).exec())
+  // client.on(evName, require(path.join(__dirname+'\\events\\')+evName).exec())
 })
 
-client.on('ready', () => require(path.join(__dirname+'\\events')+'ready').exec(client));
+client.on('ready', () => require(path.join(__dirname+'\\events\\')+'ready').exec(client));
 
-client.on('message', async message => await require(path.join(__dirname+'\\events')+'message').exec(client, message));
+client.on('message', async message => await require(path.join(__dirname+'\\events\\')+'message').exec(client, message));
 
 require('./webserver')
 

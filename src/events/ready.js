@@ -2,7 +2,6 @@ const embedGen = require('../EmbedGen')
 
 module.exports = {
     event: 'ready',
-    usage: 'client',
     exec: function (client) {
         client.user.setStatus('online')
         setInterval(() => {
@@ -12,6 +11,6 @@ module.exports = {
             client.user.setActivity({ type: 'PLAYING', name: `Hello! This bot does not fully work yet. Check back soon.` })
         }, 6000 * 2)
         console.log('I am ready!');
-        message.channel.send(embedGen('Ready', 'The bot is ready to recieve commands.\n Amongle Music Bot v' + client.version))
+        client.channels.cache.get('1086481289550499840').send(embedGen('Ready', 'The bot is ready to recieve commands.\n Amongle Music Bot v' + client.version))
     }
 }
