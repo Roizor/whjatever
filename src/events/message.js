@@ -14,14 +14,11 @@ module.exports = {
                 let cmd = client.commands.get(command)
                 cmd.exec(client, message, args)
             }
-            else if (command == 'volume') {
-                
-            }
             else {
                 message.channel.send(embedGen('Error', 'That command does not exist!'))
             }
         } catch (er) {
-            message.channel.send(embedGen('Error', 'Failed with error (```js' + er + '```) Please report this to @Roi#9999'))
+            message.channel.send(embedGen('Error', 'Failed with error ```js' + er + '``` Please report this to @Roi#9999'))
         }
     }
 }

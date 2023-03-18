@@ -1,3 +1,5 @@
+const embedGen = require('../EmbedGen')
+
 module.exports = {
     name: 'volume',
     description: 'Change the music volume',
