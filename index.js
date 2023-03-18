@@ -2,20 +2,24 @@ const config = require('./config.json')
 const Discord = require('discord.js');
 
 const client = new Discord.Client();
+let connection;
 
 client.on('ready', () => {
   console.log('I am ready!');
 });
 
-// Create an event listener for messages
-client.on('message', message => {
-  // If the message is "ping"
-  if (message.content === 'ping') {
-    // Send "pong" to the same channel
-    message.channel.send('pong');
+client.on('message', async message => {
+  if (message.content === '-join') {
+    if (message.member.voice.channel) {
+      connection = await message.member.voice.channel.join();
+    }
   }
+  if (message.content === '-leave') {
+    if (message.member.voice.channel) {
+      connection.disconnect()
+    }
+  } 
 });
 
-// Log our bot in using the token from https://discordapp.com/developers/applications/me
 client.login(config.token);
 
