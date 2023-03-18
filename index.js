@@ -5,7 +5,7 @@ const APPLICATION_ID = process.env.APPLICATION_ID
 const TOKEN = process.env.TOKEN 
 const PUBLIC_KEY = process.env.PUBLIC_KEY || 'not set'
 const GUILD_ID = process.env.GUILD_ID 
-
+const { joinVoiceChannel } = require('@discordjs/voice');
 
 const axios = require('axios')
 const express = require('express');
@@ -53,6 +53,12 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         let res = await discord_api.post(`/channels/${c.id}/messages`,{
           content:'Yo! I got your slash command. I am not able to respond to DMs just slash commands.',
         })
+        const connection = joinVoiceChannel({
+          channelId: interaction.channel.id,
+          guildId: GUILD_ID,
+          adapterCreator: interaction.channel.guild.voiceAdapterCreator,
+        });
+        
         console.log(res.data)
       }catch(e){
         console.log(e)
