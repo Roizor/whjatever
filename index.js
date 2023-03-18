@@ -29,9 +29,17 @@ async function runSample(message, args) {
   const element = res.data.items[0];
     message.channel.send(`Downloading \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\` - File \`${element.snippet.title} [${element.id.videoId}].webm\``)
     subprocess = youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId, {
-      dumpSingleJson: true
+      
     })
     subprocess.stdout.pipe(fs.createWriteStream('stdout.txt'))
+    setInterval(() => {
+      fs.readFileSync('stdout.txt').toString().split('\n').forEach((g) => {
+        if(g.startsWith('[download] 100% of')) {
+          message.channel.send('Download finished')
+          fs.renameSync(`${element.snippet.title} [${element.id.videoId}].webm`, 'whjatever.webm')
+        }
+      })
+    },1500)
 }
 
 init()
@@ -60,7 +68,9 @@ client.on('message', async message => {
     if (command == 'join') {
       if (message.member.voice.channel) {
         connection = await message.member.voice.channel.join();
-        dispatcher = connection.play('w.wav', {volume: volume});
+        if(fs.existsSync('whjatever.webm')) {
+          dispatcher = connection.play('whjatever.webm', { volume: volume })
+        }
         message.channel.send(embedGen('Music', 'I have joined the VC.'));
         dispatcher.on('finish', () => {
           message.channel.send(embedGen('Music', 'The song has finished.'));
