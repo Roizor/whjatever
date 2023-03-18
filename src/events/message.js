@@ -12,7 +12,11 @@ module.exports = {
         try {
             if(client.commands.has(command)) {
                 let cmd = client.commands.get(command)
-                cmd.exec(client, message, args)
+                try {
+                    cmd.exec(client, message, args)
+                } catch(err) {
+                    message.channel.send(embedGen('Error', 'Failed with error ```js' + er + '``` Please report this to @Roi#9999'))
+                }
             }
             else {
                 message.channel.send(embedGen('Error', 'That command does not exist!'))

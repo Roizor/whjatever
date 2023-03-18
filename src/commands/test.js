@@ -1,5 +1,6 @@
 const youtubedl = require('youtube-dl-exec')
 const embedGen = require('../EmbedGen')
+const fs = require('fs')
 
 module.exports = {
     name: 'test',
@@ -27,7 +28,7 @@ module.exports = {
                 if (g.includes('[download] 100% of')) {
                     setTimeout(async () => {
                         if (client.dlDone) return
-                        fs.renameSync(`${element.snippet.title} [${element.id.videoId}].webm`, '../music/whjatever.webm')
+                        fs.renameSync(`../../${element.snippet.title} [${element.id.videoId}].webm`, '../music/whjatever.webm')
                         message.channel.send(embedGen('Music: Download', 'Download of `' + element.snippet.title + '` finished.'));
                         if (message.member.voice.channel) {
                             connection = await message.member.voice.channel.join();

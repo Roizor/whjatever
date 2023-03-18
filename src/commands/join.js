@@ -1,4 +1,5 @@
 const embedGen = require('../EmbedGen')
+const fs = require('fs');
 
 module.exports = {
     name: 'join',
@@ -9,6 +10,11 @@ module.exports = {
             if (fs.existsSync('whjatever.webm')) {
                 try {
                     client.dispatcher = client.connection.play('whjatever.webm', { volume: volume })
+                    client.dispatcher.on('finish', () => {
+                        message.channel.send(embedGen('Music', 'The song has finished.'));
+                        client.dispatcher.destroy()
+                        client.connection.disconnect()
+                    })
                 } catch (e) {
                     message.channel.send(embedGen('Error', e))
                 }
@@ -17,11 +23,6 @@ module.exports = {
             }
             client.isinVC = true
             message.channel.send(embedGen('Music', 'I have joined the VC.'));
-            client.dispatcher.on('finish', () => {
-                message.channel.send(embedGen('Music', 'The song has finished.'));
-                client.dispatcher.destroy()
-                client.connection.disconnect()
-            })
         } else {
             message.channel.send(embedGen('Error', 'You are not in a VC!'));
         }

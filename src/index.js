@@ -2,6 +2,7 @@ const config = require('./config/config.json')
 const Discord = require('discord.js');
 const fs = require('fs')
 const {google} = require('googleapis')
+const embedGen = require('./EmbedGen')
 const path = require('path')
 const {authenticate} = require('@google-cloud/local-auth');
 
@@ -9,7 +10,7 @@ async function init() {
   const auth = await authenticate({
     keyfilePath: path.join(__dirname, './config/oauth2.json'),
     scopes: ['https://www.googleapis.com/auth/youtube'],
-  });
+  })
   google.options({auth});
 }
 
