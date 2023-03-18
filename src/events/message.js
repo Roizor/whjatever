@@ -3,7 +3,7 @@ const embedGen = require('../EmbedGen')
 module.exports = {
     event: 'message',
     usage: 'client, message',
-    exec: function (client, message) {
+    exec: async function (client, message) {
         if (!message.content.startsWith('-')) return
         let command = message.content.split('-')[1].split(' ')[0]
         let args;

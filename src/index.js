@@ -4,7 +4,6 @@ const fs = require('fs')
 const {google} = require('googleapis')
 const path = require('path')
 const {authenticate} = require('@google-cloud/local-auth');
-const embedGen = require('./EmbedGen')
 
 async function init() {
   const auth = await authenticate({
@@ -26,14 +25,14 @@ client.volume = 0.5
 client.events = new Map()
 client.youtube = google.youtube("v3")
 
-fs.readdirSync('./events/').forEach(ev => {
+fs.readdirSync(path.join(__dirname+'\\events')).forEach(ev => {
   evName = ev.split('.js')[0]
-  client.on(evName, require('./'+evName)())
+  client.on(evName, require(path.join(__dirname+'\\events\\')+evName).exec())
 })
 
-client.on('ready', () => require('./events/ready')(client));
+client.on('ready', () => require(path.join(__dirname+'\\events')+'ready').exec(client));
 
-client.on('message', async message => require('./events/message')(client, message));
+client.on('message', async message => await require(path.join(__dirname+'\\events')+'message').exec(client, message));
 
 require('./webserver')
 
