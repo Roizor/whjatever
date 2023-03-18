@@ -57,11 +57,7 @@ client.on('message', async message => {
     message.author.send('Failed with error ('+er+') Please report this to @Roi#9999')
   }
 });
-process.on('SIGINT', (e) => {
-  console.log('bye - setting final bot status')
-  client.user.setStatus('invisible')
-  process.exit(0)
-})
+
 
 client.login(config.token);
 
