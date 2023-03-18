@@ -10,19 +10,12 @@ module.exports = {
             args = message.content.split('-' + command + ' ')[1].split(' ')
         }
         try {
-            if (command == 'join') {
-                
-            }
-            else if (command == 'test') {
-                
-            }
-            else if (command == 'leave') {
-                
+            if(client.commands.has(command)) {
+                let cmd = client.commands.get(command)
+                cmd.exec(client, message, args)
             }
             else if (command == 'volume') {
-                let newVol = message.content.split(' ')[1]
-                message.channel.send(embedGen('Music: Volume', 'set volume to ' + newVol + ' from ' + client.volume));
-                client.volume = newVol;
+                
             }
             else {
                 message.channel.send(embedGen('Error', 'That command does not exist!'))
