@@ -31,9 +31,7 @@ fs.readdirSync('./events/').forEach(ev => {
   client.on(evName, require('./'+evName)())
 })
 
-client.on('ready', () => {
-  
-});
+client.on('ready', () => require('./events/ready')(client));
 
 client.on('message', async message => require('./events/message')(client, message));
 

@@ -1,3 +1,5 @@
+const embedGen = require('../EmbedGen')
+
 module.exports = {
     event: 'message',
     usage: 'client, message',
@@ -16,14 +18,7 @@ module.exports = {
                 
             }
             else if (command == 'leave') {
-                if (message.member.voice.channel) {
-                    client.dispatcher.destroy();
-                    client.connection.disconnect()
-                    client.isinVC = false
-                    message.channel.send(embedGen('Music', 'I have left the VC.'));
-                } else {
-                    message.channel.send(embedGen('Error', 'You are not in a VC!'));
-                }
+                
             }
             else if (command == 'volume') {
                 let newVol = message.content.split(' ')[1]

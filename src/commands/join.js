@@ -1,7 +1,9 @@
+const embedGen = require('../EmbedGen')
+
 module.exports = {
     name: 'join',
     description: 'Joins the vc and plays whatever sound is downloaded',
-    exec: function (client, message) {
+    exec: async function (client, message) {
         if (message.member.voice.channel) {
             client.connection = await message.member.voice.channel.join();
             if (fs.existsSync('whjatever.webm')) {

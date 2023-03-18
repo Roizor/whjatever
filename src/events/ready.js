@@ -1,3 +1,5 @@
+const embedGen = require('../EmbedGen')
+
 module.exports = {
     event: 'ready',
     usage: 'client',

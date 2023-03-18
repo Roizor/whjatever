@@ -1,4 +1,5 @@
 const youtubedl = require('youtube-dl-exec')
+const embedGen = require('../EmbedGen')
 
 module.exports = {
     name: 'test',
