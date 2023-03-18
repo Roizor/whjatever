@@ -1,5 +1,6 @@
 const config = require('./config.json')
 const Discord = require('discord.js');
+const fs = require('fs')
 const e = require('express');
 const a = e();
 const {google} = require('googleapis')
@@ -27,7 +28,10 @@ async function runSample(message, args) {
   message.channel.send('Searching..')
   const element = res.data.items[0];
     message.channel.send(`Downloading \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\` - File \`${element.snippet.title} [${element.id.videoId}].webm\``)
-    youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId)
+    subprocess = youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId, {
+      dumpSingleJson: true
+    })
+    subprocess.stdout.pipe(fs.createWriteStream('stdout.txt'))
 }
 
 init()
