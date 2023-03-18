@@ -1,6 +1,34 @@
 const config = require('./config.json')
 const Discord = require('discord.js');
+const {google} = require('googleapis')
+const youtubedl = require('youtube-dl-exec')
+const path = require('path')
+const {authenticate} = require('@google-cloud/local-auth');
 const embedGen = require('./EmbedGen')
+
+async function init() {
+  const auth = await authenticate({
+    keyfilePath: path.join(__dirname, './oauth2.keysf.json'),
+    scopes: ['https://www.googleapis.com/auth/youtube'],
+  });
+  google.options({auth});
+}
+
+const youtube = google.youtube("v3")
+
+async function runSample(message, args) {
+  console.log(args)
+  const res = await youtube.search.list({
+    part: 'id,snippet',
+    q: args,
+  });
+  message.channel.send('Searching..')
+  const element = res.data.items[0];
+    message.channel.send(`Downloading \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\` - File \`${element.snippet.title} [${element.id.videoId}].webm\``)
+    youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId)
+}
+
+init()
 
 const client = new Discord.Client();
 let connection;
@@ -20,8 +48,8 @@ client.on('ready', () => {
 
 client.on('message', async message => {
   if(!message.content.startsWith('-')) return
-  let command = message.content.split('-')[1]
-  let args = message.content.split(' ')
+  let command = message.content.split('-')[1].split(" ")[0]
+  let args = message.content.split('-'+command+' ')[1].split(' ')
   try {
     if (command == 'join') {
       if (message.member.voice.channel) {
@@ -34,6 +62,9 @@ client.on('message', async message => {
       } else {
         message.channel.send(embedGen('Music', 'You are not in a VC!'));
       }
+    }
+    else if (command == 'test') {
+      runSample(message, args.join(' '))
     }
     else if (command == 'leave') {
       if (message.member.voice.channel) {
@@ -57,11 +88,8 @@ client.on('message', async message => {
     message.author.send('Failed with error ('+er+') Please report this to @Roi#9999')
   }
 });
-process.on('SIGINT', (e) => {
-  console.log('bye - setting final bot status')
-  client.user.setStatus('invisible')
-  process.exit(0)
-})
+
+// AIzaSyC670PeOup1trwNYyv0KS277XLdxfgALMc
 
 client.login(config.token);
 
