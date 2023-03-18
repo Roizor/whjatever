@@ -22,12 +22,13 @@ client.dlDone = false
 client.connection = null
 client.dispatcher = null
 client.volume = 0.5
-client.events = new Map()
+client.commands = new Map()
 client.youtube = google.youtube("v3")
 
-fs.readdirSync(path.join(__dirname+'\\commands')).forEach(ev => {
-  evName = ev.split('.js')[0]
-  // client.on(evName, require(path.join(__dirname+'\\events\\')+evName).exec())
+fs.readdirSync(path.join(__dirname+'\\commands')).forEach(cmd => {
+  cmdName = require(path.join(__dirname+'\\commands\\')+cmd).name
+  cmdDesc = require(path.join(__dirname+'\\commands\\')+cmd).description
+  client.commands.set(cmdName, { description: cmdDesc, exec: require(path.join(__dirname+'\\commands\\')+cmd).exec })
 })
 
 client.on('ready', () => require(path.join(__dirname+'\\events\\')+'ready').exec(client));

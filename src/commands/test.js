@@ -4,7 +4,7 @@ const embedGen = require('../EmbedGen')
 module.exports = {
     name: 'test',
     description: 'Test function for searching/downloading music',
-    exec: async function (client, message) {
+    exec: async function (client, message, args) {
         console.log(args)
         const res = await client.youtube.search.list({
             part: 'id,snippet',

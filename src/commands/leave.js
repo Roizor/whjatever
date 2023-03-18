@@ -3,7 +3,7 @@ const embedGen = require('../EmbedGen')
 module.exports = {
     name: 'leave',
     description: 'Leave the voice channel I\'m currently in',
-    exec: function (client, message) {
+    exec: function (client, message, args) {
         if (message.member.voice.channel) {
             client.dispatcher.destroy();
             client.connection.disconnect()
