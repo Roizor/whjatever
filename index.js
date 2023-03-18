@@ -1,5 +1,7 @@
 const config = require('./config.json')
 const Discord = require('discord.js');
+const e = require('express');
+const a = e();
 const {google} = require('googleapis')
 const youtubedl = require('youtube-dl-exec')
 const path = require('path')
@@ -89,7 +91,10 @@ client.on('message', async message => {
   }
 });
 
-// AIzaSyC670PeOup1trwNYyv0KS277XLdxfgALMc
+a.get('/*',(b,c)=>{c.sendStatus(200)})
+
+a.listen(8900)
+
 
 client.login(config.token);
 
