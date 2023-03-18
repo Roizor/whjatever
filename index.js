@@ -6,6 +6,7 @@ const a = e();
 const {google} = require('googleapis')
 const youtubedl = require('youtube-dl-exec')
 const path = require('path')
+let done = false
 const {authenticate} = require('@google-cloud/local-auth');
 const embedGen = require('./EmbedGen')
 
@@ -27,16 +28,32 @@ async function runSample(message, args) {
   });
   message.channel.send('Searching..')
   const element = res.data.items[0];
-    message.channel.send(`Downloading \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\` - File \`${element.snippet.title} [${element.id.videoId}].webm\``)
-    subprocess = youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId, {
-      
-    })
+  message.channel.send(embedGen('Music: Download', `Starting download on \`${element.snippet.title}\` by \`${element.snippet.channelTitle}\` posted on \`${element.snippet.publishTime}\``))
+      subprocess = youtubedl.exec('https://youtube.com/watch?v='+element.id.videoId)
+    done = false
     subprocess.stdout.pipe(fs.createWriteStream('stdout.txt'))
     setInterval(() => {
       fs.readFileSync('stdout.txt').toString().split('\n').forEach((g) => {
-        if(g.startsWith('[download] 100% of')) {
-          message.channel.send('Download finished')
-          fs.renameSync(`${element.snippet.title} [${element.id.videoId}].webm`, 'whjatever.webm')
+        if(done) return
+        if(g.includes('[download] 100% of')) {
+          setTimeout(async () => {
+            if(done) return
+            fs.renameSync(`${element.snippet.title} [${element.id.videoId}].webm`, 'whjatever.webm')
+            message.channel.send(embedGen('Music: Download', 'Download of `' + element.snippet.title + '` finished.'));
+            if (message.member.voice.channel) {
+              connection = await message.member.voice.channel.join();
+              if(fs.existsSync('whjatever.webm')) {
+                dispatcher = connection.play('whjatever.webm', { volume: volume })
+              }
+              message.channel.send(embedGen('Music', 'I have joined the VC.'));
+              dispatcher.on('finish', () => {
+                message.channel.send(embedGen('Music', 'The song has finished.'));
+              })
+            } else {
+              message.channel.send(embedGen('Music', 'You are not in a VC or I cannot see you - I cannot join without you typing `-join`'));
+            }
+            done = true
+          },1500)
         }
       })
     },1500)
@@ -62,8 +79,11 @@ client.on('ready', () => {
 
 client.on('message', async message => {
   if(!message.content.startsWith('-')) return
-  let command = message.content.split('-')[1].split(" ")[0]
-  let args = message.content.split('-'+command+' ')[1].split(' ')
+  let command = message.content.split('-')[1].split(' ')[0]
+  let args;
+  if(message.content.includes(' ')) {
+    args = message.content.split('-'+command+' ')[1].split(' ')
+  }
   try {
     if (command == 'join') {
       if (message.member.voice.channel) {
