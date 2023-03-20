@@ -47,7 +47,11 @@ fs.readdir('./commands/', (err, files) => {
 
 client.on('ready', () => {
 	console.log(`${client.user.tag} is ready to play music.`)
-	client.user.setActivity()
+	client.user.setStatus('online')
+	client.user.setActivity({
+		'type': 'PLAYING',
+		'name': 'music for ' + client.guilds.cache.get('1003454205027160064').memberCount
+	})
 })
 
 client.on('messageCreate', async message => {
