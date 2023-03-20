@@ -121,6 +121,7 @@ client.distube
 //     )
 // )
 // .on("searchDone", () => {})
+require('./web/startup.js')
 console.log(process.env.TOKEN) // Only to test if my deployment actually working
 console.log('TEstsjkhadlijrtfhslk')
 client.login(process.env.TOKEN)
