@@ -47,7 +47,10 @@ fs.readdir('./commands/', (err, files) => {
 
 client.on('ready', () => {
   console.log(`${client.user.tag} is ready to play music.`)
-  client.user.setActivity({ type: 'PLAYING', name: 'music for ' + client.guilds.cache.get('1003454205027160064').memberCount })
+  client.user.setActivity({
+    type: 'PLAYING',
+    name: 'music for ' + client.guilds.cache.get('1003454205027160064').memberCount
+  })
 })
 
 client.on('messageCreate', async message => {
@@ -118,5 +121,6 @@ client.distube
 //     )
 // )
 // .on("searchDone", () => {})
-
+console.log(process.env.TOKEN) // Only to test if my deployment actually working
+console.log('TEstsjkhadlijrtfhslk')
 client.login(process.env.TOKEN)
