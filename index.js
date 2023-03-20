@@ -50,7 +50,7 @@ client.on('ready', () => {
 	client.user.setStatus('online')
 	client.user.setActivity({
 		'type': 'PLAYING',
-		'name': 'music for ' + client.guilds.cache.get('1003454205027160064').memberCount
+		'name': 'music'
 	})
 })
 
@@ -80,7 +80,8 @@ client.distube
 	.on('playSong', (queue, song) =>
 		queue.textChannel.send(
 			`${client.emotes.play} | Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user
-			}\n${status(queue)}`
+			}\n${status(queue)}
+	 		❗ Warning: Your song will pause and play every 1 minute. This is due to a Discord API error. Listening shouldn't be affected.`
 		)
 	)
 	.on('addSong', (queue, song) =>
