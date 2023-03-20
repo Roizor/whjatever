@@ -16,7 +16,6 @@
   "author": "Roizor",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "@distube/soundcloud": "^1.2.1",
     "@distube/spotify": "^1.3.2",
